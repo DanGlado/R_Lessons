@@ -1,0 +1,7 @@
+x <- as.integer(readline("Input first number"))
+y <- as.integer(readline("Input first number"))
+print(paste("Получены два числа: ", x, y), quote = FALSE)
+print(paste("Первое число возводим в степень второго", x^y), quote = FALSE)
+print(paste("Второе число возводим в степень первого", y^x), quote = FALSE)
+print(paste("Разделить первое число на второе", x/y), quote = FALSE)
+print(paste("Запрещенный прием",x/0), quote = FALSE)
