@@ -96,6 +96,8 @@ b
 print(paste(a+b, a*b, a/b), quote = FALSE)
 print(paste(sum(a), sum(b), mean(a), mean(b)), quote = FALSE)
 
+
+
 # 10
 print("№10")
 # 11
