@@ -1,4 +1,3 @@
-# 1
 print("№1")
 # typeof() - функция, определяющая тип данных (более узкий, чем mode()),
 # Так, если дано целое число, то typeof() даст ответ integer, тогда как
@@ -12,6 +11,9 @@ mode(a) # numeric
 typeof(b) # double
 mode(b) # numeric
 
+typeof(c) # complex
+mode(c) # complex
+
 # Функция str() показывает внутреннюю структуру объекта (например, вектора или списка)
 # R program to display
 # structure of a list
@@ -22,7 +24,7 @@ gfg <- list(2, 4, 5, 6, 7, 9, 13, 15, 3, 1)
 # Calling str() function
 str(gfg)
 
-# 2
+
 print("№2")
 w1 <- c(-12L, 4, "Level 2", 8.2, TRUE) # character
 w2 <- c(0, 56/6, FALSE, FALSE, 18) # double
@@ -48,7 +50,7 @@ cat("Vectors w: ",
 # NULL - не элемент (пустое значение), не считается
 # w3, w4 - double, так как присутствует элемент Inf, который относится к double
 w7 <- c(Inf) # typeof(w7) -> double
-# 3
+
 print("№3")
 w1 <- rep(c(0, -1, 1:3), times = 3) # 3 раза повторяет вектор последовательно
 w2 <- rep(c(0, -1, 1:3), each = 3) # Kаждый элемент повторяется 3 раза последовательно
@@ -58,26 +60,26 @@ w1
 w2
 w3
 w4
-# 4
+
 print("№4")
 se <- seq(by = 1, length.out = 5) # По умолчанию from = 1
 se # шаг = 1, количество выводимых элементов = 5
-# 5
+
 print("№5")
 seq_len(length(se)) # seq()=seq_len() 1:5
 se <- c(-5:5)
 seq_len(length(se)) # 1:11
 # seq_len() выводит последовательность от 1 до длины вектора
 
-# 6
+
 print("№6")
 # sc <- scan(what = logical())
 # sc
-# 7
+
 print("№7")
 # sc <- scan(what = character())
 # sc
-# 8
+
 print("№8")
 # vec <- c(1:5)
 # vec
@@ -100,23 +102,71 @@ print(paste(sum(a), sum(b), mean(a), mean(b)), quote = FALSE)
 
 # 10
 print("№10")
-# 11
+w <- c(1, 5L, "C", "Varchar", TRUE, 2i) # character
+typeof(w)
+w <- c(1, 5L, TRUE, 2i) # complex
+typeof(w)
+w <- c(1, 5L, TRUE) # double
+typeof(w)
+w <- c(1L, FALSE, TRUE) # integer
+typeof(w)
+w <- c(5L, 2i, "C") # character
+typeof(w)
+w <- c(5L, 2i) # complex
+typeof(w)
+w <- c(FALSE, 0) # double
+typeof(w)
+# Правило поглощения (от сильного к слабому) - character -> complex -> double -> integer -> logical
+
 print("№11")
-# 12
+# 1 type 1 size
+v1 <- c(1, 2, 3)
+v2 <- c(10, 20, 30)
+v1+v2
+v1-v2
+v1*v2
+v1/v2
+print("------------------", quote = FALSE)
+# 1 type n sizes
+v1 <- c(FALSE, TRUE, FALSE)
+v2 <- c(TRUE, FALSE) # +TRUE
+v1+v2
+v1-v2
+v1*v2
+v1/v2
+print("------------------", quote = FALSE)
+# n types 1 size
+v1 <- c(FALSE, 100, 5L)
+v2 <- c(2i, TRUE, 0)
+v1+v2
+v1-v2
+v1*v2
+v1/v2
+print("------------------", quote = FALSE)
+# m types n sizes
+v1 <- c(FALSE, 100, 5L)
+v2 <- c(TRUE, 1)
+v1+v2
+v1-v2
+v1*v2
+v1/v2
+
+# Правило: Если длины векторов различны, то к меньшему вектору добавляются элементы того же самого вектора,
+# начиная с первого элемента, пока операнды не станут равны по размеру
 print("№12")
-# 13
+
 print("№13")
-# 14
+
 print("№14")
-# 15
+
 print("№15")
-# 16
+
 print("№16")
-# 17
+
 print("№17")
-# 18
+
 print("№18")
-# 19
+
 print("№19")
-# 20
+
 print("№20")
