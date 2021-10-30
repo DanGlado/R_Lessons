@@ -225,6 +225,7 @@ b <- c(25, 2,  2, 2, 3, 4,  36, 18)
 z <- as.logical(c(a %% b))
 z == 0
 
+
 cat("№20\n")
 h1 = vector(mode='double', length=20)
 h2 <- vector(mode<-'double',length<-20)
