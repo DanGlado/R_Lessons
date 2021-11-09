@@ -22,13 +22,13 @@ func_week <- function (N, is_debug){
   week_en <- c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
   we_ru <- c("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
   we_en <- c("Mon","Tue","Wed","Thu","Fri","Sat","Sun")
-  N <- as.integer(N, is_debug = FALSE)
-  if (is_debug){
+  N <- as.integer(N)
+  if (is_debug){ # Дебаг ко второму заданию (на русском)
     print("Полученный вектор: ", , quote=FALSE)
     print(paste(N), quote=FALSE)
     for (n in N){
       if (n>0){
-        cat("\nСоотв. день недели \n", n, week_ru[n])
+        cat("\nСоотв. параметр и день недели \n", n, week_ru[n])
       } else {
         cat(" ")
       }
@@ -74,5 +74,5 @@ func_week <- function (N, is_debug){
     }
   }
 }
-func_week(N, DEBUG_OFF)
+func_week(N, DEBUG_ON)
 
