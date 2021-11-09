@@ -34,7 +34,7 @@ func_week <- function (N, is_debug){
       }
     }
   } else {
-    if (abbr == "abbr"){
+    if (abbr == TRUE){
       if (lang %in% en){
         for (n in N){
           if (n>0){
@@ -74,5 +74,5 @@ func_week <- function (N, is_debug){
     }
   }
 }
-func_week(N, DEBUG_ON)
+func_week(N, DEBUG_OFF)
 
