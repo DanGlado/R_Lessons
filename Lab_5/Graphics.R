@@ -263,7 +263,10 @@ barplot(t(means), beside = FALSE,
         main="Statistic_supply_sales_3shops",
         xlab = "Day",
         ylab = "Products",
-        sub = "from insider's source")
+        sub = "from insider's source",
+        width = 0.8)
+
+axis(side=1, at=c(0:14))
 
 legend("topright", legend=c("n-sale1", "n-sale2", "n-sale3"),
        col= topo.colors(3), lty=1, cex=0.9, lwd = 2,

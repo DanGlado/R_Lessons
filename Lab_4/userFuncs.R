@@ -8,7 +8,7 @@ TRUe <- "Hi"
 # pow(10L, 2, 10) # 10
 
 # № 2-5
-N <- c(1, 2, 3, 0, 2, -1, 1.5, 2.9)
+N <- c(1, 8, 3, 0, 2, -1, 1.5, 2.9)
 
 DEBUG_OFF <- FALSE
 DEBUG_ON <- TRUE
@@ -28,7 +28,7 @@ func_week <- function (N, is_debug){
     print(paste(N), quote=FALSE)
     for (n in N){
       if (n>0){
-        cat("\nСоотв. параметр и день недели \n", n, week_ru[n])
+        cat("\nСоотв. параметр и день недели \n", n, week_ru[n%%7])
       } else {
         cat(" ")
       }
@@ -38,7 +38,7 @@ func_week <- function (N, is_debug){
       if (lang %in% en){
         for (n in N){
           if (n>0){
-            cat(we_en[n], "")
+            cat(we_en[n%%7], "")
           } else {
             cat(" ")
           }
@@ -46,7 +46,7 @@ func_week <- function (N, is_debug){
       } else {
         for (n in N){
           if (n>0){
-            cat(we_ru[n], "")
+            cat(we_ru[n%%7], "")
           } else {
             cat(" ")
           }
@@ -57,7 +57,7 @@ func_week <- function (N, is_debug){
       if (lang %in% en){
         for (n in N){
           if (n>0){
-            cat(week_en[n], "")
+            cat(week_en[n%%7], "")
           } else {
             cat(" ")
           }
@@ -65,7 +65,7 @@ func_week <- function (N, is_debug){
       } else {
         for (n in N){
           if (n>0){
-            cat(week_ru[n], "")
+            cat(week_ru[n%%7], "")
           } else {
             cat(" ")
           }
