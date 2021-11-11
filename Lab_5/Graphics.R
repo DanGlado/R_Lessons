@@ -1,5 +1,5 @@
 # № 1
-options(device="windows")
+
 generate.supply <- function(n=30, min=20, max=100){
   return (sample(x = min:max, size = n, replace=TRUE))
 }
