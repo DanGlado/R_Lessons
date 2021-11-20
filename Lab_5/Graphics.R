@@ -14,7 +14,7 @@ generate.supply <- function(n=30, min=20, max=100){
 #      lwd=2,
 #      main="Supply_graph_1",
 #      xlab = "Days",
-#      ylab = "Products"
+#      ylab = "Products",
 #      sub = "from official source")
 
 # plot(generate.supply(),
