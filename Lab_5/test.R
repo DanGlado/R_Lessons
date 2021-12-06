@@ -1,7 +1,7 @@
-# options(device="windows")
-dev.new(quartz_off_screen)
-dev.list()
-# plot(x=res, fg = "black", col="green", cex=3, pch=23, bg="yellow", type="b", lwd=3)
+options(device="windows")
+# dev.list()
+res <- c(1, 2, 3)
+plot(x=res, fg = "black", col="green", cex=3, pch=23, bg="yellow", type="b", lwd=3)
 
 # рисуем вертикальные линии от 1 до 30 зеленым цветом
 # рисуем горизонтальные линии синим цветом
