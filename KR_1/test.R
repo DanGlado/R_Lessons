@@ -7,10 +7,13 @@ print("Заполнение и копирование исходных данн�
 
 goods <- list(c(n=10, mi=20, ma=100, name="Сыр, кг"), c(n=10, mi=40, ma=80, name="Молоко,л"))
 
-write_sup <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр,кг")), loc_path, sep=.Platform$file.sep, k, filename, value_sup, EXT){
+write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр,кг")), loc_path, sep=.Platform$file.sep, k, filename){
+  EXT_SUPPLY <- '.in'
+  EXT_SALE <- '.out'
   n <-  as.integer(goods[[1]][[1]][1])
   days <- c(1:n)
-  Data <- data.frame('День недели' = days)
+  Data_sup <- data.frame('День недели' = days)
+  Data_sal <- data.frame('День недели' = days)
   for (vec in goods){
     n <-  as.integer(vec[1])
     mi <-  as.integer(vec[2])
@@ -24,83 +27,55 @@ write_sup <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр,кг
     for (elem in value_sup){
       value_sal <- c(value_sal, sample(0:elem, size=1))
     }
-    Data[name] <- value_sup
+    Data_sup[name] <- value_sup
+    Data_sal[name] <- value_sal
   }
   # Creating sources files
-  write.table(Data,
-              paste0(loc_path, as.character(k), sep, filename, EXT, '.csv'),
+  write.table(Data_sup,
+              paste0(loc_path, as.character(k), sep, filename, EXT_SUPPLY, '.csv'),
               row.names = FALSE,
               sep = ';',
               dec=',')
-
-  # Copy to Analysis
-  cp_path_sup <- paste0(loc_path, as.character(k), sep, 'Магазин', as.character(k), '_', filename, EXT, '.csv')
-  write.table(Data,
+  write.table(Data_sal,
+              paste0(loc_path, as.character(k), sep, filename, EXT_SALE, '.csv'),
+              row.names = FALSE,
+              sep = ';',
+              dec=',')
+  # Copy to Analysis supply
+  cp_path_sup <- paste0(loc_path, as.character(k), sep, 'Магазин', as.character(k), '_', filename, EXT_SUPPLY, '.csv')
+  write.table(Data_sup,
               cp_path_sup,
               row.names = FALSE,
               sep = ';',
               dec=',')
   # Check
-  if (file.exists(paste0('Analysis', sep, 'Магазин', as.character(k), '_', filename, EXT, '.csv'))){
-    file.remove(paste0('Analysis', sep, 'Магазин', as.character(k), '_', filename, EXT, '.csv'))
+  if (file.exists(paste0('Analysis', sep, 'Магазин', as.character(k), '_', filename, EXT_SUPPLY, '.csv'))){
+    file.remove(paste0('Analysis', sep, 'Магазин', as.character(k), '_', filename, EXT_SUPPLY, '.csv'))
   }
   # Delete unused files
   file.copy(cp_path_sup, 'Analysis')
   file.remove(cp_path_sup)
-}
 
-write_sal <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр, кг")), loc_path, sep=.Platform$file.sep, k, filename, value_sal, EXT){
-  n <-  as.integer(goods[[1]][[1]][1])
-  days <- c(1:n)
-  Data <- data.frame('День недели' = days)
-  for (vec in goods){
-    n <-  as.integer(vec[1])
-    mi <-  as.integer(vec[2])
-    ma <-  as.integer(vec[3])
-    name <- as.character(vec[length(vec)])
-
-    # Создание двух векторов - доставки и продажи товара соотв. за n дней
-    value_sup <- (sample(x = mi:ma, size = n, replace=TRUE))
-
-    value_sal <- c()
-    for (elem in value_sup){
-      value_sal <- c(value_sal, sample(0:elem, size=1))
-    }
-    Data[name] <- value_sal
-  }
-  # Creating sources files
-  write.table(Data,
-                paste0(loc_path, as.character(k), sep, filename, EXT, '.csv'),
-                row.names = FALSE,
-                sep = ';',
-                dec=',')
-
-  # Copy to Analysis
-  cp_path_sal <- paste0(loc_path, as.character(k), sep, 'Магазин', as.character(k), '_', filename, EXT, '.csv')
-  write.table(Data,
-                cp_path_sal,
-                row.names = FALSE,
-                sep = ';',
-                dec=',')
+  # Copy to Analysis sales
+  cp_path_sal <- paste0(loc_path, as.character(k), sep, 'Магазин', as.character(k), '_', filename, EXT_SALE, '.csv')
+  write.table(Data_sal,
+              cp_path_sal,
+              row.names = FALSE,
+              sep = ';',
+              dec=',')
   # Check
-  if (file.exists(paste0('Analysis', sep, 'Магазин', as.character(k), '_', filename, EXT, '.csv'))){
-    file.remove(paste0('Analysis', sep, 'Магазин', as.character(k), '_', filename, EXT, '.csv'))
-    }
+  if (file.exists(paste0('Analysis', sep, 'Магазин', as.character(k), '_', filename, EXT_SALE, '.csv'))){
+    file.remove(paste0('Analysis', sep, 'Магазин', as.character(k), '_', filename, EXT_SALE, '.csv'))
+  }
   # Delete unused files
   file.copy(cp_path_sal, 'Analysis')
   file.remove(cp_path_sal)
-
 }
 
 generate.data <- function(goods, filename = "Глад", loc_path = 'Гладушенко_Даниил_ПИ20-1/Магазин'){
-  EXT_SUPPLY <- '.in'
-  EXT_SALE <- '.out'
   for (k in 1:10){
-    # print(goods, quote=FALSE)
-    # Создание таблицы
-
-    write_sup(days, goods, loc_path, sep=.Platform$file.sep, k, filename, value_sup, EXT_SUPPLY)
-    write_sal(days, goods, loc_path, sep=.Platform$file.sep, k, filename, value_sal, EXT_SALE)
+    # Создание таблиц
+    write_data(days, goods, loc_path, sep=.Platform$file.sep, k, filename)
     }
 }
 
