@@ -5,15 +5,18 @@ setwd("C:/Users/202530/DataspellProjects/R_lessons/KR_1")
 print(getwd(), quote = FALSE)
 print("Заполнение и копирование исходных данных...", quote = FALSE)
 
-goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"))
+# Список товаров в магазинах с характеристиками
+# n - период (в днях), mi - мин. доставка, ma - макс. доставка
+goods <- list(c(n=15, mi=20, ma=100, name="Сыр"), c(n=15, mi=20, ma=100, name="Молоко"), c(n=15, mi=50, ma=150, name="Масло"))
 
-write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")), loc_path, sep=.Platform$file.sep, k, filename){
+write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")), loc_path, sep=.Platform$file.sep, k, filename, sale.level=100){
   EXT_SUPPLY <- '.in'
   EXT_SALE <- '.out'
   n <-  as.integer(goods[[1]][[1]][1])
   days <- c(1:n)
   Data_sup <- data.frame('День недели' = days)
   Data_sal <- data.frame('День недели' = days)
+  # Для каждого товара определяем основные компоненты из вектора в списке goods
   for (vec in goods){
     n <-  as.integer(vec[1])
     mi <-  as.integer(vec[2])
@@ -22,10 +25,17 @@ write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")),
 
     # Создание двух векторов - доставки и продажи товара соотв. за n дней
     value_sup <- (sample(x = mi:ma, size = n, replace=TRUE))
-
     value_sal <- c()
+
+    # Генерация проданных товаров по дням
     for (elem in value_sup){
+      if (sale.level == 100) {
       value_sal <- c(value_sal, sample(0:elem, size=1))
+    } else if (sale.level >= 0){
+        value_sal <- c(value_sal, sample(0:(elem*sale.level/100), size=1))
+      } else {
+        print('sale.level error')
+      }
     }
     Data_sup[name] <- value_sup
     Data_sal[name] <- value_sal
@@ -72,10 +82,11 @@ write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")),
   file.remove(cp_path_sal)
 }
 
+days <-  as.integer(goods[[1]][[1]][1])
 generate.data <- function(goods, filename = "Глад", loc_path = 'Гладушенко_Даниил_ПИ20-1/Магазин'){
   for (k in 1:10){
     # Создание таблиц
-    write_data(days, goods, loc_path, sep=.Platform$file.sep, k, filename)
+    write_data(days, goods, loc_path, sep=.Platform$file.sep, k, filename, sale.level=100)
     }
 }
 
@@ -88,6 +99,7 @@ print(getwd(), quote = FALSE)
 print("В текущей директории найдены следующие файлы:", quote = FALSE)
 dir()
 
+# Заполнение переменных данными из только что созданных таблиц
 in1 <- read.table(paste0('Магазин1', '_Глад.in', '.csv'), head = TRUE, sep = ';')
 out1 <- read.table(paste0('Магазин1', '_Глад.out', '.csv'), head = TRUE, sep = ';')
 in2 <- read.table(paste0('Магазин2', '_Глад.in', '.csv'), head = TRUE, sep = ';')
@@ -109,11 +121,13 @@ out9 <- read.table(paste0('Магазин9', '_Глад.out', '.csv'), head = TR
 in10 <- read.table(paste0('Магазин10', '_Глад.in', '.csv'), head = TRUE, sep = ';')
 out10 <- read.table(paste0('Магазин10', '_Глад.out', '.csv'), head = TRUE, sep = ';')
 
-typeof(in1)
-in5
-out5
+# TEST NOT RUN
+# typeof(in1)
+# in5
+# out5
 
 print("All is OK")
+# TEST NOT RUN
 # colnames(in1)[colnames(in1) == "Дни"] <- "День недели"
 # colnames(in2)[colnames(in2) == "Дни"] <- "День недели"
 # colnames(in3)[colnames(in3) == "Дни"] <- "День недели"
@@ -124,7 +138,7 @@ print("All is OK")
 # colnames(in8)[colnames(in8) == "Дни"] <- "День недели"
 # colnames(in9)[colnames(in9) == "Дни"] <- "День недели"
 # colnames(in10)[colnames(in10) == "Дни"] <- "День недели"
-#
+
 # colnames(out1)[colnames(out1) == "Дни"] <- "День недели"
 # colnames(out2)[colnames(out2) == "Дни"] <- "День недели"
 # colnames(out3)[colnames(out3) == "Дни"] <- "День недели"
@@ -136,11 +150,11 @@ print("All is OK")
 # colnames(out9)[colnames(out9) == "Дни"] <- "День недели"
 # colnames(out10)[colnames(out10) == "Дни"] <- "День недели"
 
-
-in5[1]
-out5[2]
+# in5[1]
+# out5[2]
 
 # Step 4
+# Generating a Table template
 rev <- rep(0,12)
 profit <- rep(0, length(rev))
 
@@ -163,6 +177,8 @@ shops <- c("Магазин1", "Магазин2", "Магазин3", "Магаз�
 res.tab <- cbind(shops, res.tab)
 
 res.tab <- rbind((c(" ", rep("За неделю", 5), rep("За день", 6))), res.tab)
+
+# TEST NOT RUN
 # res.tab[2] <- NULL  # Удаление второго столбца
 # res.tab <- res.tab[-c(1), ] # Удаление первой строки
 
@@ -176,6 +192,7 @@ realiz <- c()
 util <- c()
 srd <- c()
 
+# Включение переменных в списки для удобства итерации по ним
 VARS_in <- list(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10)
 VARS_out <- list(out1, out2, out3, out4, out5, out6, out7, out8, out9, out10)
 
@@ -183,35 +200,37 @@ P_supply <- 5500
 P_sale <- 8000
 P_util <- 400
 
-
+# TEST NOT RUN
 # VARS_in[[1]]
 # test <- VARS_in[1] - VARS_out[1]
 # test
-# dev.new(); par(mfrow = c(strings, columns)); f <- factor(x = flex, levels = day.week);
-sum(VARS_in[[1]][, 2])
+# sum(VARS_in[[1]][, 2])
 # print(VARS_in)
-Q_util <- c()
-exes <- c()
+# dev.new(); par(mfrow = c(strings, columns)); f <- factor(x = flex, levels = day.week);
 
+exes<- c()
 
 for (n in 1:10){
   for (col in 2:(length(goods)+1)){
     v.prod.in <- VARS_in[[n]][, col]
     v.prod.out <- VARS_out[[n]][, col]
 
-    gain <- c(gain, sum(v.prod.out) * P_sale)
-    realiz <- c(realiz, sum(v.prod.out))
-    srd <- c(srd, sd(v.prod.out))
+    gain <- c(gain, sum(v.prod.out) * P_sale)  # Сумма выручки за все проданные товары во всех магазинах
+    realiz <- c(realiz, sum(v.prod.out))  # Количество проданных товаров во всех магазинах
+    srd <- c(srd, sd(v.prod.out))  # Равномерность продаж по всем магазинам
 
-    Q_util <- sum(v.prod.in) - sum(v.prod.out)
-    util <- c(util, Q_util)
-    exes <- c(exes, (P_util * Q_util + P_supply * sum(v.prod.in)))
+    Q_util <- sum(v.prod.in) - sum(v.prod.out)  # Количество списанных товаров
+    util <- c(util, Q_util)  # Вектор списанных товаров
+    exes <- c(exes, (P_util * Q_util + P_supply * sum(v.prod.in)))  # Вектор расходов на покупку товаров и утилизации непроданных
   }
 }
-gain_test <- gain
-exes_test <- exes
-util_test <- util
-profit <- c(profit, (gain - exes))
+# TEST NOT RUN
+# gain_test <- gain
+# exes_test <- exes
+# util_test <- util
+
+profit <- c(profit, (gain - exes))  # Вектор прибыли по всем магазинам и товарам
+# Последовательность для группировки собранных данных в векторах gain, realiz и т.д. по товарно
 steps <- seq(from = 1, to = length(goods)*n, by = length(goods))
 print(steps)
 result.week <- function(vector){
@@ -223,6 +242,7 @@ result.week <- function(vector){
 }
 
 if (length(goods) > 1){
+  # Если товаров более 1, то группируем, агрегируя данные векторов, иначе они готовы к вставке в итоговую таблицу
   gain <- result.week(gain)
   profit <- result.week(profit)
   realiz <- result.week(realiz)
@@ -230,25 +250,29 @@ if (length(goods) > 1){
   srd <- result.week(srd)
 }
 
+# Контроль результатов
 print(c("profit ", gain), quote = FALSE)
 print(c("profit ", profit), quote = FALSE)
 print(c("realiz ", realiz), quote = FALSE)
 print(c("util ", util), quote = FALSE)
 print(c("sd ", srd), quote = FALSE)
 
-sale_max <- c()
-sale_min <- c()
-util_max <- c()
-days1 <- c()
-days2 <- c()
-days3 <- c()
-
+# Создание векторов для получения макс и мин значений проданных и утилизированных товаров
 s_ma <- c()
 s_mi <- c()
 u_ma <- c()
 
-selected.prod <- readline(prompt="Enter product: ")
+# Сохранение индексов (№ дня)
+days1 <- c()
+days2 <- c()
+days3 <- c()
 
+# Запрос названия продукта из списка, по которому будет проведен анализ
+# UNCOMMENT для самостоятельного выбора продукта
+# selected.prod <- readline(prompt="Enter product: ")
+selected.prod <- "Сыр"
+
+# Получение вектора всех имеющихся названий товаров, продающихся в магазинах
 name.goods <- c()
 for (good in goods){
   name.goods <- c(name.goods, good[length(good)])
@@ -261,11 +285,17 @@ while (!(selected.prod %in% name.goods)){
 }
 
 print("Товар найден!")
+
+# Находим номер колонки для последующего обращения к значениям продажи и поставкам по выбранному товару
 ind_col <- as.integer(which(name.goods == selected.prod)+1)
+
+# Для каждого магазина n
 for (n in 1:10){
+  # Создаются векторы со значениями поставок и продаж по дням
   v.prod.in <- VARS_in[[n]][, ind_col]
   v.prod.out <- VARS_out[[n]][, ind_col]
 
+  # Формирование векторов и запоминание индексов значений (№ дня)
   s_ma <- c(s_ma, max(v.prod.out))
   day1 <- which.max(v.prod.out)
   s_mi <- c(s_mi, min(v.prod.out))
@@ -273,22 +303,14 @@ for (n in 1:10){
   u_ma <- c(u_ma, max(v.prod.in-v.prod.out))
   day3 <- which.max(v.prod.in-v.prod.out)
 
+  # Сохранение полученных номеров дней
   days1 <- c(days1, day1)
   days2 <- c(days2, day2)
   days3 <- c(days3, day3)
 
 }
-  print(s_ma, day1)
-  # sale_max <- c(sale_max, s_ma)
-  # sale_min <- c(sale_min, s_mi)
-  # util_max <- c(util_max, u_ma)
 
-# print(VARS_out)
-# print(c(sale_max, days1))
-# print(c(sale_min, days2))
-# print(c(util_max, days3))
-
-
+# Заполнение итоговой таблицы полученными данными
 res.tab[2] <- c('За нед', gain, sum(gain), mean(gain))
 res.tab[3] <- c('За нед', profit, sum(profit), mean(profit))
 res.tab[4] <- c('За нед', realiz, sum(realiz),  mean(realiz))
@@ -296,11 +318,11 @@ res.tab[5] <- c('За нед', util, sum(util), mean(util))
 res.tab[6] <- c('За нед', srd, sum(srd), mean(srd))
 
 res.tab[7] <- c('За день', s_ma, rep(NA, 2))
-res.tab[8] <- c('№ Дня', days1, NA, NA)
-res.tab[9] <- c('За день', s_mi, NA, NA)
-res.tab[10] <- c('№ Дня', days2, NA, NA)
-res.tab[11] <- c('За день', u_ma, NA, NA)
-res.tab[12] <- c('№ Дня', days3, NA, NA)
+res.tab[8] <- c('№ Дня', days1, rep(NA, 2))
+res.tab[9] <- c('За день', s_mi, rep(NA, 2))
+res.tab[10] <- c('№ Дня', days2, rep(NA, 2))
+res.tab[11] <- c('За день', u_ma, rep(NA, 2))
+res.tab[12] <- c('№ Дня', days3, rep(NA, 2))
 
 print(res.tab)
 # getwd() "C:/Users/202530/DataspellProjects/R_lessons/KR_1/Analysis"
@@ -309,3 +331,10 @@ write.table(res.tab, 'Результаты.csv', row.names = FALSE, sep = ';')
 if (file.exists("Результаты.csv")){
   print("Таблица создана!", quote = FALSE)
 }
+
+
+# GRAPHS
+# №1, 5
+shops <- readline(prompt="Enter shop numbers separated by a space: ")
+# print(split(shops, " "))
+

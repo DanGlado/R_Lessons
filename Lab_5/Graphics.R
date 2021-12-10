@@ -1,5 +1,5 @@
 # № 1
-
+options(device="windows")
 generate.supply <- function(n=30, min=20, max=100){
   return (sample(x = min:max, size = n, replace=TRUE))
 }
@@ -217,47 +217,49 @@ shop2 <- generate.supply(n=15, max=80, min=20)
 sale2 <- generate.sale(shop2)
 shop3 <- generate.supply(n=15, max=80, min=20)
 sale3 <- generate.sale(shop3)
-#
-# plot(sale1,
-#      type = "b",
-#      lwd = 2,
-#      col = "green",
-#      main="Statistic_supply_sales_3shops",
-#      xlab = "Day",
-#      ylab = "Products",
-#      sub = "from insider's source")
-#
-# lines(shop1,
-#       lwd = 2,
-#       type = "b",
-#       col = "lightgreen",)
-#
-# lines(sale2,
-#       lwd = 2,
-#       type = "b",
-#       col = "red",)
-# lines(shop2,
-#       lwd = 2,
-#       type = "b",
-#       col = "pink",)
-#
-# lines(sale3,
-#       lwd = 2,
-#       type = "b",
-#       col = "blue",)
-#
-# lines(shop3,
-#       lwd = 2,
-#       type = "b",
-#       col = "lightblue",)
-#
-# legend("topright", legend=c("sale1", "supply1", "sale2", "supply2", "sale3", "supply3"),
-#        col=c("green", "lightgreen", "red", "pink", "blue", "lightblue"), lty=1, cex=0.7, lwd = 2,
-#        title="Lines_supply", text.font=3, bg='lightcyan')
+
+dev.new()
+plot(sale1,
+     type = "b",
+     lwd = 2,
+     col = "green",
+     main="Statistic_supply_sales_3shops",
+     xlab = "Day",
+     ylab = "Products",
+     sub = "from insider's source")
+
+lines(shop1,
+      lwd = 2,
+      type = "b",
+      col = "lightgreen",)
+
+lines(sale2,
+      lwd = 2,
+      type = "b",
+      col = "red",)
+lines(shop2,
+      lwd = 2,
+      type = "b",
+      col = "pink",)
+
+lines(sale3,
+      lwd = 2,
+      type = "b",
+      col = "blue",)
+
+lines(shop3,
+      lwd = 2,
+      type = "b",
+      col = "lightblue",)
+
+legend("topright", legend=c("sale1", "supply1", "sale2", "supply2", "sale3", "supply3"),
+       col=c("green", "lightgreen", "red", "pink", "blue", "lightblue"), lty=1, cex=0.7, lwd = 2,
+       title="Lines_supply", text.font=3, bg='lightcyan')
 
 # № 9
 means <- cbind(shop1-sale1, shop2-sale2, shop3-sale3)
 means
+dev.new()
 barplot(t(means), beside = FALSE,
         col = topo.colors(3),
         main="Statistic_supply_sales_3shops",
