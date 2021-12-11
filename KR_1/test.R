@@ -7,7 +7,7 @@ print("Заполнение и копирование исходных данн�
 
 # Список товаров в магазинах с характеристиками
 # n - период (в днях), mi - мин. доставка, ma - макс. доставка
-goods <- list(c(n=15, mi=20, ma=100, name="Сыр"), c(n=15, mi=20, ma=100, name="Молоко"), c(n=15, mi=50, ma=150, name="Масло"))
+goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"), c(n=10, mi=50, ma=150, name="Масло"))
 
 write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")), loc_path, sep=.Platform$file.sep, k, filename, sale.level=100){
   EXT_SUPPLY <- '.in'
@@ -30,9 +30,9 @@ write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")),
     # Генерация проданных товаров по дням
     for (elem in value_sup){
       if (sale.level == 100) {
-      value_sal <- c(value_sal, sample(0:elem, size=1))
+      value_sal <- c(value_sal, sample(1:elem, size=1))
     } else if (sale.level >= 0){
-        value_sal <- c(value_sal, sample(0:(elem*sale.level/100), size=1))
+        value_sal <- c(value_sal, sample(1:(elem*sale.level/100), size=1))
       } else {
         print('sale.level error')
       }
@@ -251,7 +251,7 @@ if (length(goods) > 1){
 }
 
 # Контроль результатов
-print(c("profit ", gain), quote = FALSE)
+print(c("gain ", gain), quote = FALSE)
 print(c("profit ", profit), quote = FALSE)
 print(c("realiz ", realiz), quote = FALSE)
 print(c("util ", util), quote = FALSE)
@@ -334,7 +334,269 @@ if (file.exists("Результаты.csv")){
 
 
 # GRAPHS
-# №1, 5
-shops <- readline(prompt="Enter shop numbers separated by a space: ")
-# print(split(shops, " "))
 
+# №1, 5
+
+# 1. По одному магазину подготовить графики с различными
+# вариантами оформления. Каждый график строится по одному
+# товару и должен отображать динамику по дням периода (неделя
+# или месяц) следующих показателей:
+# • объем продаж
+# • выручка
+# • прибыль
+# • списание
+# • рентабельность
+# На графиках по прибыли и рентабельности рассмотреть случай
+# отрицательных значений в некоторые дни (нужно подготовить
+# соответствующие данные), объяснить причину появления
+# отрицательных значений.
+
+# 5. Написать скрипт, в котором спрашивать Пользователя, какие
+# номера магазинов его интересуют. По указанным номерам нужно
+# построить графики, аналогичные п.1, для этих магазинов. На одном
+# графике отображать данные указанных магазинов. Реализовать
+# алгоритм, чтобы данные по всем магазинам корректно
+# отображались на графике и были видны. На график поместить
+# легенду с расшифровкой.
+
+shops <- c()  # Вектор интересующих магазинов
+while (TRUE){
+  shop <- as.integer(readline(prompt="Input shop number: "))
+  if (shop != 0){
+    shops <- c(shops, shop)
+  } else {
+    break
+  }
+}
+
+colors_help <- c("blue", "pink", 'brown', 'black', 'red', 'yellow', 'orange', 'grey', "purple", "forestgreen", "lightblue")
+colors_legend <- c()
+
+
+# • О_Б_Ъ_Е_М___П_Р_О_Д_А_Ж
+mi_y <- Inf
+ma_y <- -Inf
+for (shop in shops){
+  if (max(VARS_out[[shop]][, 2]) > ma_y){
+    ma_y <- max(VARS_out[[shop]][, 2])
+  }
+  if (min(VARS_out[[shop]][, 2]) < mi_y){
+    mi_y <- min(VARS_out[[shop]][, 2])
+  }
+}
+dev.new()
+plot(VARS_out[[shops[1]]][, 2],
+     lwd = 2,
+     type = "b",
+     col = "green",
+     main="Statistic_sales_shops",
+     xlab = "Day",
+     ylab = "Volume sales",
+     ylim = c(mi_y, ma_y),
+     xlim = c(1, 10))
+colors_legend <- c(colors_legend, "green")
+
+for (shop in shops[2:length(shops)]){
+  lines(VARS_out[[shop]][, 2],
+        lwd = 2,
+        col = colors_help[shop])
+  colors_legend <- c(colors_legend, colors_help[shop])
+}
+
+legend("topright", legend=paste("shop №",shops),
+       col=colors_legend, lty=1, cex=0.7, lwd = 2,
+       title="Lines_sales", text.font=3, bg='lightcyan')
+
+# • В_Ы_Р_У_Ч_К_А
+dev.new()
+
+mi_y <- Inf
+ma_y <- -Inf
+for (shop in shops){
+  if (max(VARS_out[[shop]][, 2]) > ma_y){
+    ma_y <- max(VARS_out[[shop]][, 2])
+  }
+  if (min(VARS_out[[shop]][, 2]) < mi_y){
+    mi_y <- min(VARS_out[[shop]][, 2])
+  }
+}
+
+mi_y <- mi_y*P_sale
+ma_y <- ma_y*P_sale
+
+plot((VARS_out[[shops[1]]][, 2]*P_sale),
+     lwd = 2,
+     type = "b",
+     col = "green",
+     main="Statistic_revenue_shops",
+     xlab = "Day",
+     ylab = "Volume revenue",
+     ylim = c(mi_y, ma_y),
+     xlim = c(1, 10))
+
+colors_legend <- c(colors_legend, "green")
+
+if (length(shops) > 1){
+  for (shop in shops[2:length(shops)]){
+    lines((VARS_out[[shop]][, 2]*P_sale),
+          lwd = 2,
+          col = colors_help[shop])
+    colors_legend <- c(colors_legend, colors_help[shop])
+  }
+}
+
+legend("topright", legend=paste("shop №",shops),
+       col=colors_legend, lty=1, cex=0.7, lwd = 2,
+       title="Lines_sales", text.font=3, bg='lightcyan')
+
+# • П_Р_И_Б_Ы_ЛЬ
+dev.new()
+
+mi_y <- Inf
+ma_y <- -Inf
+for (shop in shops){
+  # rev <- (VARS_out[[shop]][, 2]*P_sale)
+  # sup <- (VARS_in[[shop]][, 2]*P_supply)
+  # util <- ((VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)
+  # profit <- (rev - (sup + util))
+  if (max(VARS_out[[shop]][, 2]*P_sale -
+            (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)) > ma_y){
+    ma_y <- max(VARS_out[[shop]][, 2]*P_sale -
+                  (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))
+  }
+  if (min(VARS_out[[shop]][, 2]*P_sale -
+            (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)) < mi_y){
+    mi_y <- min(VARS_out[[shop]][, 2]*P_sale -
+                  (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))
+  }
+}
+
+
+plot(VARS_out[[shops[1]]][, 2]*P_sale -
+       (VARS_in[[shops[1]]][, 2]*P_supply + (VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2])*P_util),
+     lwd = 2,
+     type = "b",
+     col = "green",
+     main="Statistic_profit_shops",
+     xlab = "Day",
+     ylab = "Profit",
+     ylim = c(mi_y, ma_y),
+     xlim = c(1, 10))
+colors_legend <- c(colors_legend, "green")
+
+if (length(shops) > 1){
+  for (shop in shops[2:length(shops)]){
+    lines((VARS_out[[shop]][, 2]*P_sale -
+      (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)),
+          lwd = 2,
+          col = colors_help[shop])
+    colors_legend <- c(colors_legend, colors_help[shop])
+  }
+}
+
+legend("topright", legend=paste("shop №",shops),
+       col=colors_legend, lty=1, cex=0.7, lwd = 2,
+       title="Lines_sales", text.font=3, bg='lightcyan')
+
+# • С_П_И_С_А_Н_И_Е
+dev.new()
+
+mi_y <- Inf
+ma_y <- -Inf
+for (shop in shops){
+  if (max(VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2]) > ma_y){
+    ma_y <- max(VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])
+  }
+  if (min(VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2]) < mi_y){
+    mi_y <- min(VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])
+  }
+}
+
+plot((VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2]),
+     lwd = 2,
+     type = "b",
+     col = "green",
+     main="Statistic_util_shops",
+     xlab = "Day",
+     ylab = "Volume util",
+     ylim = c(mi_y, ma_y),
+     xlim = c(1, 10))
+
+colors_legend <- c(colors_legend, "green")
+
+if (length(shops) > 1){
+  for (shop in shops[2:length(shops)]){
+    lines((VARS_out[[shop]][, 2]),
+    lwd = 2,
+    col = colors_help[shop])
+    colors_legend <- c(colors_legend, colors_help[shop])
+  }
+}
+
+
+legend("topright", legend=paste("shop №",shops),
+       col=colors_legend, lty=1, cex=0.7, lwd = 2,
+       title="Lines_sales", text.font=3, bg='lightcyan')
+
+# • Р_Е_Н_Т_А_Б_Е_Л_Ь_Н_О_С_ТЬ
+dev.new()
+
+mi_y <- Inf
+ma_y <- -Inf
+for (shop in shops){
+  # rev <- (VARS_out[[shop]][, 2]*P_sale)
+  # sup <- (VARS_in[[shop]][, 2]*P_supply)
+  # util <- ((VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)
+  # profit <- (rev - (sup + util))
+  # gain <- (VARS_out[[shop]][, 2]*P_sale)
+  # rent <- profit / gain*100
+  if (max(((VARS_out[[shop]][, 2]*P_sale -
+            (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))
+            / (VARS_out[[shop]][, 2]*P_sale))*100) > ma_y){
+    ma_y <- max(((VARS_out[[shop]][, 2]*P_sale -
+      (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))
+      / (VARS_out[[shop]][, 2]*P_sale))*100)
+  }
+  if (min(((VARS_out[[shop]][, 2]*P_sale -
+            (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))
+            / (VARS_out[[shop]][, 2]*P_sale))*100) < mi_y){
+    mi_y <- min(((VARS_out[[shop]][, 2]*P_sale -
+      (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))
+      / (VARS_out[[shop]][, 2]*P_sale))*100)
+  }
+}
+# TEST NOT RUN
+# print(mi_y)
+# print(ma_y)
+# print((VARS_out[[shops[1]]][, 2]*P_sale -
+#   (VARS_in[[shops[1]]][, 2]*P_supply + (VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2])*P_util)) / (VARS_out[[shops[1]]][, 2]*P_sale))
+plot((((VARS_out[[shops[1]]][, 2]*P_sale -
+       (VARS_in[[shops[1]]][, 2]*P_supply + (VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2])*P_util))
+       / (VARS_out[[shops[1]]][, 2]*P_sale)))*100,
+     lwd = 2,
+     type = "b",
+     col = "green",
+     main="Statistic_rentab_shops",
+     xlab = "Day",
+     ylab = "Rentab",
+     ylim = c(mi_y, ma_y),
+     xlim = c(1, 10))
+colors_legend <- c(colors_legend, "green")
+
+if (length(shops) > 1){
+  for (shop in shops[2:length(shops)]){
+    lines(((VARS_out[[shop]][, 2]*P_sale -
+      (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))
+      / (VARS_out[[shop]][, 2]*P_sale))*100,
+          lwd = 2,
+          col = colors_help[shop])
+    colors_legend <- c(colors_legend, colors_help[shop])
+  }
+}
+
+legend("topright", legend=paste("shop №",shops),
+       col=colors_legend, lty=1, cex=0.7, lwd = 2,
+       title="Lines_sales", text.font=3, bg='lightcyan')
+
+
+# par(mfrow = c(1, 3)) ??????

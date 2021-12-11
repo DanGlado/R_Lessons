@@ -116,49 +116,49 @@ generate.supply <- function(n=30, min=20, max=100){
 
 
 
-# shop1 <- generate.supply(n=10)
-# shop2 <- generate.supply(n=10)
-# shop3 <- generate.supply(n=10)
-# shop4 <- generate.supply(n=10)
-# shop5 <- generate.supply(n=10)
-#
-# plot(shop1,
-#      fg = "red",
-#      col="orange",
-#      type="b",
-#      lwd=2,
-#      pch=15,
-#      main="Supply_graph_5shops",
-#      xlab = "Days",
-#      ylab = "Products",
-#      sub = "from official source")
-#
-# lines(shop2,
-#       col="brown",
-#       type="b",
-#       pch="O",
-#       lwd=1.5)
-#
-# lines(shop3,
-#       col="blue2",
-#       type="b",
-#       pch="$",
-#       lwd=1.5)
-#
-# lines(shop4,
-#       col="green3",
-#       type="b",
-#       pch=22,
-#       lwd=1.5)
-#
-# lines(shop5,
-#       col="purple",
-#       type="b",
-#       lwd=1.5)
-#
-# legend("topright", legend=c("shop1", "shop2", "shop3", "shop4", "shop5"),
-#        col=c("orange", "brown", "blue2", "green3", "purple"), lty=1, cex=0.7,
-#        title="Lines_supply", text.font=3, bg='lightblue')
+shop1 <- generate.supply(n=10)
+shop2 <- generate.supply(n=10)
+shop3 <- generate.supply(n=10)
+shop4 <- generate.supply(n=10)
+shop5 <- generate.supply(n=10)
+
+plot(shop1,
+     fg = "red",
+     col="orange",
+     type="b",
+     lwd=2,
+     pch=15,
+     main="Supply_graph_5shops",
+     xlab = "Days",
+     ylab = "Products",
+     sub = "from official source")
+
+lines(shop2,
+      col="brown",
+      type="b",
+      pch="O",
+      lwd=1.5)
+
+lines(shop3,
+      col="blue2",
+      type="b",
+      pch="$",
+      lwd=1.5)
+
+lines(shop4,
+      col="green3",
+      type="b",
+      pch=22,
+      lwd=1.5)
+
+lines(shop5,
+      col="purple",
+      type="b",
+      lwd=1.5)
+
+legend("topright", legend=c("shop1", "shop2", "shop3", "shop4", "shop5"),
+       col=c("orange", "brown", "blue2", "green3", "purple"), lty=1, cex=0.7,
+       title="Lines_supply", text.font=3, bg='lightblue')
 
 # № 5
 
@@ -218,7 +218,7 @@ sale2 <- generate.sale(shop2)
 shop3 <- generate.supply(n=15, max=80, min=20)
 sale3 <- generate.sale(shop3)
 
-dev.new()
+# dev.new()
 plot(sale1,
      type = "b",
      lwd = 2,
@@ -257,19 +257,19 @@ legend("topright", legend=c("sale1", "supply1", "sale2", "supply2", "sale3", "su
        title="Lines_supply", text.font=3, bg='lightcyan')
 
 # № 9
-means <- cbind(shop1-sale1, shop2-sale2, shop3-sale3)
-means
-dev.new()
-barplot(t(means), beside = FALSE,
-        col = topo.colors(3),
-        main="Statistic_supply_sales_3shops",
-        xlab = "Day",
-        ylab = "Products",
-        sub = "from insider's source",
-        width = 0.8)
-
-axis(side=1, at=c(0:14))
-
-legend("topright", legend=c("n-sale1", "n-sale2", "n-sale3"),
-       col= topo.colors(3), lty=1, cex=0.9, lwd = 2,
-       title="Lines_supply", text.font=3, bg='lightcyan')
+# means <- cbind(shop1-sale1, shop2-sale2, shop3-sale3)
+# means
+# dev.new()
+# barplot(t(means), beside = FALSE,
+#         col = topo.colors(3),
+#         main="Statistic_supply_sales_3shops",
+#         xlab = "Day",
+#         ylab = "Products",
+#         sub = "from insider's source",
+#         width = 0.8)
+#
+# axis(side=1, at=c(0:14))
+#
+# legend("topright", legend=c("n-sale1", "n-sale2", "n-sale3"),
+#        col= topo.colors(3), lty=1, cex=0.9, lwd = 2,
+#        title="Lines_supply", text.font=3, bg='lightcyan')
