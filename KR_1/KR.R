@@ -7,7 +7,7 @@ print("Заполнение и копирование исходных данн�
 
 # Список товаров в магазинах с характеристиками
 # n - период (в днях), mi - мин. доставка, ma - макс. доставка
-goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"), c(n=10, mi=50, ma=150, name="Масло"))
+goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"))  #, c(n=10, mi=50, ma=150, name="Масло"))
 
 write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")), loc_path, sep=.Platform$file.sep, k, filename, sale.level=100){
   EXT_SUPPLY <- '.in'
@@ -607,8 +607,92 @@ legend("topright", legend=paste("shop №",shops),
 # • рентабельность
 # Каждый товар выделять своим цветом, расшифровку цветов вынести
 # в легенду.
+dev.off()
+dev.off()
 
 
+dev.new()
+mi_y <- Inf
+ma_y <- -Inf
+numbs <- name.goods
+if (max(VARS_in[[1]]-VARS_out[[1]]) > ma_y){
+  ma_y <- max(VARS_in[[1]]-VARS_out[[1]])
+}
+if (min(VARS_in[[1]]-VARS_out[[1]]) < mi_y){
+  mi_y <- min(VARS_in[[1]]-VARS_out[[1]])
+}
+
+# TEST NOT RUN
+# print(mi_y)
+# print(ma_y)
+
+plot(rev1,
+     fg = "red",
+     col=colors_help[1],
+     type="b",
+     lwd=2,
+     pch='C',
+     main="Revenue_shop1",
+     xlab = "Days",
+     ylab = "Products",
+     xlim = c(1, 10),
+     ylim = c(mi_y, ma_y),
+     sub = "from insider's source")
+
+lines(rev2,
+      col=colors_help[1],
+      type="b",
+      pch="M",
+      lwd=2)
+
+legend("topright", paste("Prod №", numbs), cex = 0.8,
+       fill = colors_help)
+
+dev.new()
+plot(util1,
+     fg = "red",
+     col=colors_help[1],
+     type="b",
+     lwd=2,
+     pch='C',
+     main="Util_shop1",
+     xlab = "Days",
+     ylab = "Products",
+     xlim = c(1, 10),
+     ylim = c(mi_y, ma_y),
+     sub = "from insider's source")
+
+lines(util2,
+      col=colors_help[1],
+      type="b",
+      pch="M",
+      lwd=2)
+
+legend("topright", paste("Prod №", numbs), cex = 0.8,
+       fill = colors_help)
+
+dev.new()
+plot(rent1,
+     fg = "red",
+     col=colors_help[1],
+     type="b",
+     lwd=2,
+     pch='C',
+     main="Rentab_shop1",
+     xlab = "Days",
+     ylab = "Products",
+     xlim = c(1, 10),
+     ylim = c(mi_y, ma_y),
+     sub = "from insider's source")
+
+lines(rent2,
+      col=colors_help[1],
+      type="b",
+      pch="M",
+      lwd=2)
+
+legend("topright", paste("Prod №", numbs), cex = 0.8,
+       fill = colors_help)
 # 3. Подготовить круговую диаграмму, на которой представить объемы
 # продаж одного товара за весь период сразу по всем магазинам.
 # Каждый магазин выделять своим цветом. Расшифровку цветов
@@ -640,10 +724,158 @@ legend("topright", paste("shop №", numbs), cex = 0.8,
 
 
 # 4. Подготовить график, на котором будет представлена динамика
-# объема продаж двух-трех товаров по всем магазинам. Каждый
+# объема продаж двух товаров по всем магазинам. Каждый
 # магазин выделять своим цветом. Каждый товар выделять своим
 # значком. На график поместить легенду с расшифровкой
+# dev.off()
+# dev.off()
+# dev.off()
+# dev.off()
 
+mi_y <- Inf
+ma_y <- -Inf
+for (shop in shops){
+  if (max(VARS_in[[shop]]-VARS_out[[shop]]) > ma_y){
+    ma_y <- max(VARS_in[[shop]]-VARS_out[[shop]])
+  }
+  if (min(VARS_in[[shop]]-VARS_out[[shop]]) < mi_y){
+    mi_y <- min(VARS_in[[shop]]-VARS_out[[shop]])
+  }
+}
+# TEST NOT RUN
+# print(mi_y)
+# print(ma_y)
+
+plot(VARS_out[[1]][, 2],
+     fg = "red",
+     col=colors_help[1],
+     type="b",
+     lwd=2,
+     pch='C',
+     main="Supply_graph_5shops",
+     xlab = "Days",
+     ylab = "Products",
+     xlim = c(1, 10),
+     ylim = c(mi_y, ma_y),
+     sub = "from official source")
+
+lines(VARS_out[[1]][, 3],
+      col=colors_help[1],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[2]][, 2],
+      col=colors_help[2],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[2]][, 3],
+      col=colors_help[2],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[3]][, 2],
+      col=colors_help[3],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[3]][, 3],
+      col=colors_help[3],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[4]][, 2],
+      col=colors_help[4],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[4]][, 3],
+      col=colors_help[4],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[5]][, 2],
+      col=colors_help[5],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[5]][, 3],
+      col=colors_help[5],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[6]][, 2],
+      col=colors_help[6],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[6]][, 3],
+      col=colors_help[6],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[7]][, 2],
+      col=colors_help[7],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[7]][, 3],
+      col=colors_help[7],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[8]][, 2],
+      col=colors_help[8],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[8]][, 3],
+      col=colors_help[8],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[9]][, 2],
+      col=colors_help[9],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[9]][, 3],
+      col=colors_help[9],
+      type="b",
+      pch="M",
+      lwd=2)
+
+lines(VARS_out[[10]][, 2],
+      col=colors_help[10],
+      type="b",
+      pch="C",
+      lwd=2)
+
+lines(VARS_out[[10]][, 3],
+      col=colors_help[10],
+      type="b",
+      pch="M",
+      lwd=2)
+
+legend("topright", legend=paste("shop №", c(1:10)),
+       col=colors_help, lty=1, cex=0.7,
+       title="Lines_supply", text.font=3, bg='lightblue')
 
 
 # 6. Построить столбиковую диаграмму эффективности продаж по
