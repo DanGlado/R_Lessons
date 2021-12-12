@@ -613,40 +613,29 @@ legend("topright", legend=paste("shop №",shops),
 # продаж одного товара за весь период сразу по всем магазинам.
 # Каждый магазин выделять своим цветом. Расшифровку цветов
 # дать в легенде.
-mi_y <- Inf
-ma_y <- -Inf
-for (shop in 1:10){
-  if (max(VARS_out[[shop]][, 2]) > ma_y){
-    ma_y <- max(VARS_out[[shop]][, 2])
-  }
-  if (min(VARS_out[[shop]][, 2]) < mi_y){
-    mi_y <- min(VARS_out[[shop]][, 2])
-  }
-}
+# dev.off()
+# dev.off()
+# dev.off()
+# dev.off()
+# dev.off()
+
+
+
 dev.new()
-plot(VARS_out[[shops[1]]][, 2],
-     lwd = 2,
-     type = "b",
-     col = "green",
-     main="Statistic_sales_shops",
-     xlab = "Day",
-     ylab = "Volume sales",
-     ylim = c(mi_y, ma_y),
-     xlim = c(1, 10))
-colors_legend <- c(colors_legend, "green")
-
-for (shop in shops[2:length(shops)]){
-  lines(VARS_out[[shop]][, 2],
-        lwd = 2,
-        col = colors_help[shop])
-  colors_legend <- c(colors_legend, colors_help[shop])
+vec <- c()
+piepercent <- c()
+numbs <- c(1:10)
+for (shop in numbs){
+  vec <- c(vec, sum(VARS_out[[shop]][, 2]))
+}
+summ <- sum(vec)
+for (shop in numbs){
+  piepercent <- c(piepercent, round(100*(sum(VARS_out[[shop]][, 2])/sum(summ)), 1))
 }
 
-legend("topright", legend=paste("shop №",shops),
-       col=colors_legend, lty=1, cex=0.7, lwd = 2,
-       title="Lines_sales", text.font=3, bg='lightcyan')
-
-
+pie(vec, labels=paste(piepercent, "%"), radius=1, main='Circle diagram Volume of Sales', col=colors_help)
+legend("topright", paste("shop №", numbs), cex = 0.8,
+       fill = colors_help)
 
 
 
@@ -665,26 +654,28 @@ legend("topright", legend=paste("shop №",shops),
 # высота столбика по магазину состоит из суммы продаж по всем
 # товарам за весь период. Каждый товар выделять своим цветом,
 # расшифровку дать в легенде.
-
-means <- cbind(shop1-sale1, shop2-sale2, shop3-sale3)
-means
 dev.new()
-barplot(t(means), beside = FALSE,
-col = topo.colors(3),
-main="Statistic_supply_sales_3shops",
-xlab = "Day",
-ylab = "Products",
-sub = "from insider's source",
-width = 0.8)
+numbs <- c(1:10)
+sales <- c()
+for (tabl in VARS_out){
+  sales <- cbind(sales, cbind(tabl$'Сыр'))
+}
 
-axis(side=1, at=c(0:14))
+# print(sales)
 
-legend("topright", legend=c("n-sale1", "n-sale2", "n-sale3"),
-col= topo.colors(3), lty=1, cex=0.9, lwd = 2,
-title="Lines_supply", text.font=3, bg='lightcyan')
+barplot(sales, beside = FALSE,
+    col = colors_help,
+    main="Statistic_All_Shops_Sales",
+    xlab = "Day",
+    ylab = "Products",
+    sub = "from insider's source",
+    width = 0.8)
 
+axis(side=1, at=c(1:10))
 
-
+legend("topright", legend=paste("shop №", numbs),
+       col=colors_help, lty=1, cex=0.9, lwd = 2,
+       title="Lines_supply", text.font=3, bg='lightcyan')
 
 
 

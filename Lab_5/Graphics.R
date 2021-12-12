@@ -257,19 +257,20 @@ legend("topright", legend=c("sale1", "supply1", "sale2", "supply2", "sale3", "su
        title="Lines_supply", text.font=3, bg='lightcyan')
 
 # № 9
-# means <- cbind(shop1-sale1, shop2-sale2, shop3-sale3)
-# means
-# dev.new()
-# barplot(t(means), beside = FALSE,
-#         col = topo.colors(3),
-#         main="Statistic_supply_sales_3shops",
-#         xlab = "Day",
-#         ylab = "Products",
-#         sub = "from insider's source",
-#         width = 0.8)
-#
-# axis(side=1, at=c(0:14))
-#
-# legend("topright", legend=c("n-sale1", "n-sale2", "n-sale3"),
-#        col= topo.colors(3), lty=1, cex=0.9, lwd = 2,
-#        title="Lines_supply", text.font=3, bg='lightcyan')
+dev.off()
+means <- cbind(shop1-sale1, shop2-sale2, shop3-sale3)
+means
+dev.new()
+barplot(t(means), beside = FALSE,
+        col = topo.colors(3),
+        main="Statistic_supply_sales_3shops",
+        xlab = "Day",
+        ylab = "Products",
+        sub = "from insider's source",
+        width = 0.8)
+
+axis(side=1, at=c(0:14))
+
+legend("topright", legend=c("n-sale1", "n-sale2", "n-sale3"),
+       col= topo.colors(3), lty=1, cex=0.9, lwd = 2,
+       title="Lines_supply", text.font=3, bg='lightcyan')
