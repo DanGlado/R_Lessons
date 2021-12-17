@@ -7,15 +7,18 @@ print("Заполнение и копирование исходных данн�
 
 # Список товаров в магазинах с характеристиками
 # n - период (в днях), mi - мин. доставка, ma - макс. доставка
-goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"))  #, c(n=10, mi=50, ma=150, name="Масло"))
+goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"))  # c(n=10, mi=50, ma=150, name="Масло"))
+EXT_SUPPLY <- '.in'
+EXT_SALE <- '.out'
 
 write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")), loc_path, sep=.Platform$file.sep, k, filename, sale.level=100){
   EXT_SUPPLY <- '.in'
   EXT_SALE <- '.out'
-  n <-  as.integer(goods[[1]][[1]][1])
+  n <-  as.integer(goods[[1]][[1]][1])  # Количество дней
   days <- c(1:n)
   Data_sup <- data.frame('День недели' = days)
   Data_sal <- data.frame('День недели' = days)
+
   # Для каждого товара определяем основные компоненты из вектора в списке goods
   for (vec in goods){
     n <-  as.integer(vec[1])
@@ -26,13 +29,12 @@ write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")),
     # Создание двух векторов - доставки и продажи товара соотв. за n дней
     value_sup <- (sample(x = mi:ma, size = n, replace=TRUE))
     value_sal <- c()
-
     # Генерация проданных товаров по дням
     for (elem in value_sup){
       if (sale.level == 100) {
-      value_sal <- c(value_sal, sample(1:elem, size=1))
+        value_sal <- c(value_sal, sample(1:elem, size=1))
     } else if (sale.level >= 0){
-        value_sal <- c(value_sal, sample(1:(elem*sale.level/100), size=1))
+        value_sal <- c(value_sal, sample(1:(elem*(sale.level*0.01)), size=1))
       } else {
         print('sale.level error')
       }
@@ -99,27 +101,28 @@ print(getwd(), quote = FALSE)
 print("В текущей директории найдены следующие файлы:", quote = FALSE)
 dir()
 
+shop_name <- "Глад"
 # Заполнение переменных данными из только что созданных таблиц
-in1 <- read.table(paste0('Магазин1', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out1 <- read.table(paste0('Магазин1', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in2 <- read.table(paste0('Магазин2', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out2 <- read.table(paste0('Магазин2', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in3 <- read.table(paste0('Магазин3', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out3 <- read.table(paste0('Магазин3', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in4 <- read.table(paste0('Магазин4', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out4 <- read.table(paste0('Магазин4', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in5 <- read.table(paste0('Магазин5', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out5 <- read.table(paste0('Магазин5', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in6 <- read.table(paste0('Магазин6', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out6 <- read.table(paste0('Магазин6', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in7 <- read.table(paste0('Магазин7', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out7 <- read.table(paste0('Магазин7', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in8 <- read.table(paste0('Магазин8', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out8 <- read.table(paste0('Магазин8', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in9 <- read.table(paste0('Магазин9', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out9 <- read.table(paste0('Магазин9', '_Глад.out', '.csv'), head = TRUE, sep = ';')
-in10 <- read.table(paste0('Магазин10', '_Глад.in', '.csv'), head = TRUE, sep = ';')
-out10 <- read.table(paste0('Магазин10', '_Глад.out', '.csv'), head = TRUE, sep = ';')
+in1 <- read.table(paste0('Магазин1', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out1 <- read.table(paste0('Магазин1', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in2 <- read.table(paste0('Магазин2', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out2 <- read.table(paste0('Магазин2', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in3 <- read.table(paste0('Магазин3', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out3 <- read.table(paste0('Магазин3', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in4 <- read.table(paste0('Магазин4', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out4 <- read.table(paste0('Магазин4', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in5 <- read.table(paste0('Магазин5', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out5 <- read.table(paste0('Магазин5', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in6 <- read.table(paste0('Магазин6', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out6 <- read.table(paste0('Магазин6', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in7 <- read.table(paste0('Магазин7', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out7 <- read.table(paste0('Магазин7', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in8 <- read.table(paste0('Магазин8', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out8 <- read.table(paste0('Магазин8', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in9 <- read.table(paste0('Магазин9', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out9 <- read.table(paste0('Магазин9', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
+in10 <- read.table(paste0('Магазин10', '_', shop_name, EXT_SUPPLY, '.csv'), head = TRUE, sep = ';')
+out10 <- read.table(paste0('Магазин10', '_', shop_name, EXT_SALE, '.csv'), head = TRUE, sep = ';')
 
 # TEST NOT RUN
 # typeof(in1)
@@ -609,90 +612,90 @@ legend("topright", legend=paste("shop №",shops),
 # в легенду.
 dev.off()
 dev.off()
+dev.off()
+dev.off()
+dev.off()
 
-
-dev.new()
-mi_y <- Inf
-ma_y <- -Inf
 numbs <- name.goods
-if (max(VARS_in[[1]]-VARS_out[[1]]) > ma_y){
-  ma_y <- max(VARS_in[[1]]-VARS_out[[1]])
+shop <- 1  # Для первого магазина
+
+mi_rev_y <- Inf
+ma_rev_y <- -Inf
+
+# if (max(VARS_in[[shop]]-VARS_out[[shop]]) > ma_rev_y){
+#   ma_rev_y <- max(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
+# }
+# if (min(VARS_in[[shop]]-VARS_out[[shop]]) < mi_rev_y){
+#   mi_rev_y <- min(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
+# }
+#
+# if (max(VARS_in[[shop]]-VARS_out[[shop]]) > ma_rev_y){
+#   ma_rev_y <- max(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
+# }
+# if (min(VARS_in[[shop]]-VARS_out[[shop]]) < mi_rev_y){
+#   mi_rev_y <- min(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
+# }
+#
+# if (max(VARS_in[[shop]]-VARS_out[[shop]]) > ma_rev_y){
+#   ma_rev_y <- max(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
+# }
+# if (min(VARS_in[[shop]]-VARS_out[[shop]]) < mi_rev_y){
+#   mi_rev_y <- min(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
+# }
+
+plot_lines <- function (type, mi_y, ma_y, vec){
+  dev.new()
+  print(vec)
+  plot(vec[[1]],
+       fg = "red",
+       col=colors_help[1],
+       type="b",
+       lwd=2,
+       pch='C',
+       main=paste0(type, "_shop", shop),
+       xlab = "Days",
+       ylab = "Products",
+       xlim = c(1, 10),
+       ylim = c(mi_y, ma_y),
+       sub = "from insider's source")
+  for (vind in 2:length(vec)){
+    lines(vec[[vind]],
+          col=colors_help[vind],
+          type="b",
+          pch="M",
+          lwd=2)
+  }
+  legend("topright", paste("Prod ", numbs), cex = 0.8,
+         fill = colors_help)
 }
-if (min(VARS_in[[1]]-VARS_out[[1]]) < mi_y){
-  mi_y <- min(VARS_in[[1]]-VARS_out[[1]])
+# Create plots
+vec.profit <- c()
+vec.util <- c()
+vec.rentab <- c()
+list.profit <- list()
+list.util <- list()
+list.rentab <- list()
+for (good in 2:(length(name.goods)+1)){
+  profit <- VARS_out[[shop]][, good] * P_sale -
+     (P_util * (VARS_in[[shop]][, good] - VARS_out[[shop]][, good])) -
+     (P_supply * VARS_in[[shop]][, good])
+  util <- (VARS_in[[shop]][, good] - VARS_out[[shop]][, good])
+  rentab <- (profit)/(VARS_out[[shop]][, good] * P_sale)
+  list.profit <- append(list.profit, list(profit))
+  list.util <- append(list.util, list(util))
+  list.rentab <- c(list.rentab, list(rentab))
+
+  vec.profit <- c(vec.profit, profit)
+  vec.util <- c(vec.util, util)
+  vec.rentab <- c(vec.rentab, rentab)
 }
+# print(min(vec.util))
+plot_lines(type = "Profit", mi_y = min(vec.profit), ma_y = max(vec.profit), list.profit)
+plot_lines(type = "Util", mi_y = min(vec.util), ma_y = max(vec.util), list.util)
+plot_lines(type = "Rentab", mi_y = min(vec.rentab), ma_y = max(vec.rentab), list.rentab)
 
-# TEST NOT RUN
-# print(mi_y)
-# print(ma_y)
 
-plot(rev1,
-     fg = "red",
-     col=colors_help[1],
-     type="b",
-     lwd=2,
-     pch='C',
-     main="Revenue_shop1",
-     xlab = "Days",
-     ylab = "Products",
-     xlim = c(1, 10),
-     ylim = c(mi_y, ma_y),
-     sub = "from insider's source")
 
-lines(rev2,
-      col=colors_help[1],
-      type="b",
-      pch="M",
-      lwd=2)
-
-legend("topright", paste("Prod №", numbs), cex = 0.8,
-       fill = colors_help)
-
-dev.new()
-plot(util1,
-     fg = "red",
-     col=colors_help[1],
-     type="b",
-     lwd=2,
-     pch='C',
-     main="Util_shop1",
-     xlab = "Days",
-     ylab = "Products",
-     xlim = c(1, 10),
-     ylim = c(mi_y, ma_y),
-     sub = "from insider's source")
-
-lines(util2,
-      col=colors_help[1],
-      type="b",
-      pch="M",
-      lwd=2)
-
-legend("topright", paste("Prod №", numbs), cex = 0.8,
-       fill = colors_help)
-
-dev.new()
-plot(rent1,
-     fg = "red",
-     col=colors_help[1],
-     type="b",
-     lwd=2,
-     pch='C',
-     main="Rentab_shop1",
-     xlab = "Days",
-     ylab = "Products",
-     xlim = c(1, 10),
-     ylim = c(mi_y, ma_y),
-     sub = "from insider's source")
-
-lines(rent2,
-      col=colors_help[1],
-      type="b",
-      pch="M",
-      lwd=2)
-
-legend("topright", paste("Prod №", numbs), cex = 0.8,
-       fill = colors_help)
 # 3. Подготовить круговую диаграмму, на которой представить объемы
 # продаж одного товара за весь период сразу по всем магазинам.
 # Каждый магазин выделять своим цветом. Расшифровку цветов
@@ -731,15 +734,15 @@ legend("topright", paste("shop №", numbs), cex = 0.8,
 # dev.off()
 # dev.off()
 # dev.off()
-
+dev.new()
 mi_y <- Inf
 ma_y <- -Inf
 for (shop in shops){
-  if (max(VARS_in[[shop]]-VARS_out[[shop]]) > ma_y){
-    ma_y <- max(VARS_in[[shop]]-VARS_out[[shop]])
+  if (max(VARS_out[[shop]]) > ma_y){
+    ma_y <- max(VARS_out[[shop]])
   }
-  if (min(VARS_in[[shop]]-VARS_out[[shop]]) < mi_y){
-    mi_y <- min(VARS_in[[shop]]-VARS_out[[shop]])
+  if (min(VARS_out[[shop]]) < mi_y){
+    mi_y <- min(VARS_out[[shop]])
   }
 }
 # TEST NOT RUN
@@ -752,126 +755,27 @@ plot(VARS_out[[1]][, 2],
      type="b",
      lwd=2,
      pch='C',
-     main="Supply_graph_5shops",
+     main="Sales_2_prod",
      xlab = "Days",
      ylab = "Products",
      xlim = c(1, 10),
      ylim = c(mi_y, ma_y),
      sub = "from official source")
 
-lines(VARS_out[[1]][, 3],
-      col=colors_help[1],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[2]][, 2],
-      col=colors_help[2],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[2]][, 3],
-      col=colors_help[2],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[3]][, 2],
-      col=colors_help[3],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[3]][, 3],
-      col=colors_help[3],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[4]][, 2],
-      col=colors_help[4],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[4]][, 3],
-      col=colors_help[4],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[5]][, 2],
-      col=colors_help[5],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[5]][, 3],
-      col=colors_help[5],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[6]][, 2],
-      col=colors_help[6],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[6]][, 3],
-      col=colors_help[6],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[7]][, 2],
-      col=colors_help[7],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[7]][, 3],
-      col=colors_help[7],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[8]][, 2],
-      col=colors_help[8],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[8]][, 3],
-      col=colors_help[8],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[9]][, 2],
-      col=colors_help[9],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[9]][, 3],
-      col=colors_help[9],
-      type="b",
-      pch="M",
-      lwd=2)
-
-lines(VARS_out[[10]][, 2],
-      col=colors_help[10],
-      type="b",
-      pch="C",
-      lwd=2)
-
-lines(VARS_out[[10]][, 3],
-      col=colors_help[10],
-      type="b",
-      pch="M",
-      lwd=2)
+for (i in 1:10){
+  lines(VARS_out[[i]][, 3],
+        col=colors_help[i],
+        type="b",
+        pch="M",
+        lwd=2)
+}
+for (i in 2:10){
+  lines(VARS_out[[i]][, 2],
+        col=colors_help[i],
+        type="b",
+        pch="C",
+        lwd=2)
+}
 
 legend("topright", legend=paste("shop №", c(1:10)),
        col=colors_help, lty=1, cex=0.7,
