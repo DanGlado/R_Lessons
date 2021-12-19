@@ -7,7 +7,7 @@ print("Заполнение и копирование исходных данн�
 
 # Список товаров в магазинах с характеристиками
 # n - период (в днях), mi - мин. доставка, ma - макс. доставка
-goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"))  # c(n=10, mi=50, ma=150, name="Масло"))
+goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"), c(n=10, mi=50, ma=150, name="Масло"))
 EXT_SUPPLY <- '.in'
 EXT_SALE <- '.out'
 
@@ -167,13 +167,14 @@ sale <- rep(0, nrow(res.tab))
 res.tab$"Реализация, конт." <- sale
 res.tab$"Списание, конт." <- sale
 res.tab$"Равномерность продаж" <- sale
-
+# res.tab$"Списание, 1 товара" <- sale
 res.tab$"Продажи макс." <- sale
 res.tab$"День_ПМа" <- sale
 res.tab$"Продажи мин." <- sale
 res.tab$"День_ПМи" <- sale
 res.tab$"Списание макс." <- sale
 res.tab$"День_Спис" <- sale
+colnames(res.tab)[6] <- goods[[1]][4]
 
 shops <- c("Магазин1", "Магазин2", "Магазин3", "Магазин4", "Магазин5", "Магазин6", "Магазин7", "Магазин8", "Магазин9", "Магазин10", "Итого", "Среднее")
 
@@ -212,7 +213,7 @@ P_util <- 400
 # dev.new(); par(mfrow = c(strings, columns)); f <- factor(x = flex, levels = day.week);
 
 exes<- c()
-
+realiz2 <- c()
 for (n in 1:10){
   for (col in 2:(length(goods)+1)){
     v.prod.in <- VARS_in[[n]][, col]
@@ -226,11 +227,11 @@ for (n in 1:10){
     util <- c(util, Q_util)  # Вектор списанных товаров
     exes <- c(exes, (P_util * Q_util + P_supply * sum(v.prod.in)))  # Вектор расходов на покупку товаров и утилизации непроданных
   }
+  v.prod.in <- VARS_in[[n]][, 2]
+  v.prod.out <- VARS_out[[n]][, 2]
+  realiz2 <- c(realiz2, sum(realiz2))
 }
-# TEST NOT RUN
-# gain_test <- gain
-# exes_test <- exes
-# util_test <- util
+
 
 profit <- c(profit, (gain - exes))  # Вектор прибыли по всем магазинам и товарам
 # Последовательность для группировки собранных данных в векторах gain, realiz и т.д. по товарно
@@ -251,6 +252,7 @@ if (length(goods) > 1){
   realiz <- result.week(realiz)
   util <- result.week(util)
   srd <- result.week(srd)
+  realiz2 <- result.week(realiz2)
 }
 
 # Контроль результатов
@@ -364,7 +366,7 @@ if (file.exists("Результаты.csv")){
 
 shops <- c()  # Вектор интересующих магазинов
 while (TRUE){
-  shop <- as.integer(readline(prompt="Input shop number: "))
+  shop <- as.integer(readline(prompt="Введите номер магазина: "))
   if (shop != 0){
     shops <- c(shops, shop)
   } else {
@@ -392,9 +394,9 @@ plot(VARS_out[[shops[1]]][, 2],
      lwd = 2,
      type = "b",
      col = "green",
-     main="Statistic_sales_shops",
-     xlab = "Day",
-     ylab = "Volume sales",
+     main="Статистика продаж по магазинам",
+     xlab = "Дни",
+     ylab = "Объем продаж, конт.",
      ylim = c(mi_y, ma_y),
      xlim = c(1, 10))
 colors_legend <- c(colors_legend, "green")
@@ -406,9 +408,9 @@ for (shop in shops[2:length(shops)]){
   colors_legend <- c(colors_legend, colors_help[shop])
 }
 
-legend("topright", legend=paste("shop №",shops),
+legend("topright", legend=paste("Магазин №",shops),
        col=colors_legend, lty=1, cex=0.7, lwd = 2,
-       title="Lines_sales", text.font=3, bg='lightcyan')
+       title="Поставщики", text.font=3, bg='lightcyan')
 
 # • В_Ы_Р_У_Ч_К_А
 dev.new()
@@ -427,30 +429,30 @@ for (shop in shops){
 mi_y <- mi_y*P_sale
 ma_y <- ma_y*P_sale
 
-plot((VARS_out[[shops[1]]][, 2]*P_sale),
+plot(((VARS_out[[shops[1]]][, 2]*P_sale)/1000),
      lwd = 2,
      type = "b",
      col = "green",
-     main="Statistic_revenue_shops",
-     xlab = "Day",
-     ylab = "Volume revenue",
-     ylim = c(mi_y, ma_y),
+     main="Статистика доходов магазинов",
+     xlab = "Дни",
+     ylab = "Доходы от продаж всех товаров, тыс. руб.",
+     ylim = c(mi_y/1000, ma_y/1000),
      xlim = c(1, 10))
 
 colors_legend <- c(colors_legend, "green")
 
 if (length(shops) > 1){
   for (shop in shops[2:length(shops)]){
-    lines((VARS_out[[shop]][, 2]*P_sale),
+    lines((VARS_out[[shop]][, 2]*P_sale/1000),
           lwd = 2,
           col = colors_help[shop])
     colors_legend <- c(colors_legend, colors_help[shop])
   }
 }
 
-legend("topright", legend=paste("shop №",shops),
+legend("topright", legend=paste("Магазин №",shops),
        col=colors_legend, lty=1, cex=0.7, lwd = 2,
-       title="Lines_sales", text.font=3, bg='lightcyan')
+       title="Поставщики", text.font=3, bg='lightcyan')
 
 # • П_Р_И_Б_Ы_ЛЬ
 dev.new()
@@ -458,10 +460,6 @@ dev.new()
 mi_y <- Inf
 ma_y <- -Inf
 for (shop in shops){
-  # rev <- (VARS_out[[shop]][, 2]*P_sale)
-  # sup <- (VARS_in[[shop]][, 2]*P_supply)
-  # util <- ((VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)
-  # profit <- (rev - (sup + util))
   if (max(VARS_out[[shop]][, 2]*P_sale -
             (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)) > ma_y){
     ma_y <- max(VARS_out[[shop]][, 2]*P_sale -
@@ -475,31 +473,31 @@ for (shop in shops){
 }
 
 
-plot(VARS_out[[shops[1]]][, 2]*P_sale -
-       (VARS_in[[shops[1]]][, 2]*P_supply + (VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2])*P_util),
+plot(((VARS_out[[shops[1]]][, 2]*P_sale -
+       (VARS_in[[shops[1]]][, 2]*P_supply + (VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2])*P_util))/1000),
      lwd = 2,
      type = "b",
      col = "green",
-     main="Statistic_profit_shops",
-     xlab = "Day",
-     ylab = "Profit",
-     ylim = c(mi_y, ma_y),
+     main="Статистика прибыли по магазинам",
+     xlab = "Дни",
+     ylab = "Прибыль от продаж всех товаров, тыс. руб.",
+     ylim = c(mi_y/1000, ma_y/1000),
      xlim = c(1, 10))
 colors_legend <- c(colors_legend, "green")
 
 if (length(shops) > 1){
   for (shop in shops[2:length(shops)]){
-    lines((VARS_out[[shop]][, 2]*P_sale -
-      (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)),
+    lines(((VARS_out[[shop]][, 2]*P_sale -
+      (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))/1000),
           lwd = 2,
           col = colors_help[shop])
     colors_legend <- c(colors_legend, colors_help[shop])
   }
 }
 
-legend("topright", legend=paste("shop №",shops),
+legend("topright", legend=paste("Магазин №",shops),
        col=colors_legend, lty=1, cex=0.7, lwd = 2,
-       title="Lines_sales", text.font=3, bg='lightcyan')
+       title="Поставщики", text.font=3, bg='lightcyan')
 
 # • С_П_И_С_А_Н_И_Е
 dev.new()
@@ -519,9 +517,9 @@ plot((VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2]),
      lwd = 2,
      type = "b",
      col = "green",
-     main="Statistic_util_shops",
-     xlab = "Day",
-     ylab = "Volume util",
+     main="Статистика утилизации по магазинам",
+     xlab = "Дни",
+     ylab = "Объем утилизации, конт.",
      ylim = c(mi_y, ma_y),
      xlim = c(1, 10))
 
@@ -537,9 +535,9 @@ if (length(shops) > 1){
 }
 
 
-legend("topright", legend=paste("shop №",shops),
+legend("topright", legend=paste("Магазин №",shops),
        col=colors_legend, lty=1, cex=0.7, lwd = 2,
-       title="Lines_sales", text.font=3, bg='lightcyan')
+       title="Поставщики", text.font=3, bg='lightcyan')
 
 # • Р_Е_Н_Т_А_Б_Е_Л_Ь_Н_О_С_ТЬ
 dev.new()
@@ -547,12 +545,6 @@ dev.new()
 mi_y <- Inf
 ma_y <- -Inf
 for (shop in shops){
-  # rev <- (VARS_out[[shop]][, 2]*P_sale)
-  # sup <- (VARS_in[[shop]][, 2]*P_supply)
-  # util <- ((VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util)
-  # profit <- (rev - (sup + util))
-  # gain <- (VARS_out[[shop]][, 2]*P_sale)
-  # rent <- profit / gain*100
   if (max(((VARS_out[[shop]][, 2]*P_sale -
             (VARS_in[[shop]][, 2]*P_supply + (VARS_in[[shop]][, 2]-VARS_out[[shop]][, 2])*P_util))
             / (VARS_out[[shop]][, 2]*P_sale))*100) > ma_y){
@@ -568,20 +560,16 @@ for (shop in shops){
       / (VARS_out[[shop]][, 2]*P_sale))*100)
   }
 }
-# TEST NOT RUN
-# print(mi_y)
-# print(ma_y)
-# print((VARS_out[[shops[1]]][, 2]*P_sale -
-#   (VARS_in[[shops[1]]][, 2]*P_supply + (VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2])*P_util)) / (VARS_out[[shops[1]]][, 2]*P_sale))
+
 plot((((VARS_out[[shops[1]]][, 2]*P_sale -
        (VARS_in[[shops[1]]][, 2]*P_supply + (VARS_in[[shops[1]]][, 2]-VARS_out[[shops[1]]][, 2])*P_util))
        / (VARS_out[[shops[1]]][, 2]*P_sale)))*100,
      lwd = 2,
      type = "b",
      col = "green",
-     main="Statistic_rentab_shops",
-     xlab = "Day",
-     ylab = "Rentab",
+     main="Статистика рентабельности магазинов",
+     xlab = "Дни",
+     ylab = "Рентабельность, %",
      ylim = c(mi_y, ma_y),
      xlim = c(1, 10))
 colors_legend <- c(colors_legend, "green")
@@ -597,9 +585,9 @@ if (length(shops) > 1){
   }
 }
 
-legend("topright", legend=paste("shop №",shops),
+legend("topright", legend=paste("Магазин №",shops),
        col=colors_legend, lty=1, cex=0.7, lwd = 2,
-       title="Lines_sales", text.font=3, bg='lightcyan')
+       title="Поставщики", text.font=3, bg='lightcyan')
 
 
 # 2. Подготовить графики по одному из магазинов, на каждом графике
@@ -610,11 +598,11 @@ legend("topright", legend=paste("shop №",shops),
 # • рентабельность
 # Каждый товар выделять своим цветом, расшифровку цветов вынести
 # в легенду.
-dev.off()
-dev.off()
-dev.off()
-dev.off()
-dev.off()
+# dev.off()
+# dev.off()
+# dev.off()
+# dev.off()
+# dev.off()
 
 numbs <- name.goods
 shop <- 1  # Для первого магазина
@@ -622,42 +610,20 @@ shop <- 1  # Для первого магазина
 mi_rev_y <- Inf
 ma_rev_y <- -Inf
 
-# if (max(VARS_in[[shop]]-VARS_out[[shop]]) > ma_rev_y){
-#   ma_rev_y <- max(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
-# }
-# if (min(VARS_in[[shop]]-VARS_out[[shop]]) < mi_rev_y){
-#   mi_rev_y <- min(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
-# }
-#
-# if (max(VARS_in[[shop]]-VARS_out[[shop]]) > ma_rev_y){
-#   ma_rev_y <- max(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
-# }
-# if (min(VARS_in[[shop]]-VARS_out[[shop]]) < mi_rev_y){
-#   mi_rev_y <- min(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
-# }
-#
-# if (max(VARS_in[[shop]]-VARS_out[[shop]]) > ma_rev_y){
-#   ma_rev_y <- max(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
-# }
-# if (min(VARS_in[[shop]]-VARS_out[[shop]]) < mi_rev_y){
-#   mi_rev_y <- min(VARS_in[[shop]]-VARS_out[[shop]]) * P_sale
-# }
-
-plot_lines <- function (type, mi_y, ma_y, vec){
+plot_lines <- function (type, unit, mi_y, ma_y, vec){
   dev.new()
-  print(vec)
   plot(vec[[1]],
        fg = "red",
        col=colors_help[1],
        type="b",
        lwd=2,
        pch='C',
-       main=paste0(type, "_shop", shop),
-       xlab = "Days",
-       ylab = "Products",
+       main=paste0(type, " всех продуктов Магазина №", shop),
+       xlab = "Дни",
+       ylab = paste0(type, ", ", unit),
        xlim = c(1, 10),
        ylim = c(mi_y, ma_y),
-       sub = "from insider's source")
+       sub = "Из секретных источников")
   for (vind in 2:length(vec)){
     lines(vec[[vind]],
           col=colors_help[vind],
@@ -665,7 +631,7 @@ plot_lines <- function (type, mi_y, ma_y, vec){
           pch="M",
           lwd=2)
   }
-  legend("topright", paste("Prod ", numbs), cex = 0.8,
+  legend("topright", paste("Продукт ", numbs), cex = 0.8,
          fill = colors_help)
 }
 # Create plots
@@ -676,11 +642,11 @@ list.profit <- list()
 list.util <- list()
 list.rentab <- list()
 for (good in 2:(length(name.goods)+1)){
-  profit <- VARS_out[[shop]][, good] * P_sale -
+  profit <- (VARS_out[[shop]][, good] * P_sale -
      (P_util * (VARS_in[[shop]][, good] - VARS_out[[shop]][, good])) -
-     (P_supply * VARS_in[[shop]][, good])
+     (P_supply * VARS_in[[shop]][, good]))/1000
   util <- (VARS_in[[shop]][, good] - VARS_out[[shop]][, good])
-  rentab <- (profit)/(VARS_out[[shop]][, good] * P_sale)
+  rentab <- ((profit)/(VARS_out[[shop]][, good] * P_sale))*1000
   list.profit <- append(list.profit, list(profit))
   list.util <- append(list.util, list(util))
   list.rentab <- c(list.rentab, list(rentab))
@@ -690,9 +656,9 @@ for (good in 2:(length(name.goods)+1)){
   vec.rentab <- c(vec.rentab, rentab)
 }
 # print(min(vec.util))
-plot_lines(type = "Profit", mi_y = min(vec.profit), ma_y = max(vec.profit), list.profit)
-plot_lines(type = "Util", mi_y = min(vec.util), ma_y = max(vec.util), list.util)
-plot_lines(type = "Rentab", mi_y = min(vec.rentab), ma_y = max(vec.rentab), list.rentab)
+plot_lines(type = "Прибыль", unit = "тыс. руб.", mi_y = min(vec.profit), ma_y = max(vec.profit), list.profit)
+plot_lines(type = "Утилизация", unit = "конт.", mi_y = min(vec.util), ma_y = max(vec.util), list.util)
+plot_lines(type = "Рентабельность", unit = "%", mi_y = min(vec.rentab), ma_y = max(vec.rentab), list.rentab)
 
 
 
@@ -720,8 +686,8 @@ for (shop in numbs){
   piepercent <- c(piepercent, round(100*(sum(VARS_out[[shop]][, 2])/sum(summ)), 1))
 }
 
-pie(vec, labels=paste(piepercent, "%"), radius=1, main='Circle diagram Volume of Sales', col=colors_help)
-legend("topright", paste("shop №", numbs), cex = 0.8,
+pie(vec, labels=paste(piepercent, "%"), radius=1, main='Объемы продаж по всем магазинам', col=colors_help)
+legend("topright", paste("Магазин №", numbs), cex = 0.8,
        fill = colors_help)
 
 
@@ -755,12 +721,12 @@ plot(VARS_out[[1]][, 2],
      type="b",
      lwd=2,
      pch='C',
-     main="Sales_2_prod",
-     xlab = "Days",
-     ylab = "Products",
+     main="Продажи двух продуктов во всех магазинах",
+     xlab = "Дни",
+     ylab = "Продажи двух продуктов, конт.",
      xlim = c(1, 10),
      ylim = c(mi_y, ma_y),
-     sub = "from official source")
+     sub = "Из секретных источников")
 
 for (i in 1:10){
   lines(VARS_out[[i]][, 3],
@@ -777,9 +743,9 @@ for (i in 2:10){
         lwd=2)
 }
 
-legend("topright", legend=paste("shop №", c(1:10)),
+legend("topright", legend=paste("Магазин №", c(1:10)),
        col=colors_help, lty=1, cex=0.7,
-       title="Lines_supply", text.font=3, bg='lightblue')
+       title="Поставщики", text.font=3, bg='lightblue')
 
 
 # 6. Построить столбиковую диаграмму эффективности продаж по
@@ -801,17 +767,17 @@ for (tabl in VARS_out){
 
 barplot(sales, beside = FALSE,
     col = colors_help,
-    main="Statistic_All_Shops_Sales",
-    xlab = "Day",
-    ylab = "Products",
-    sub = "from insider's source",
+    main="Статистика продаж по всем магазинам",
+    xlab = "Дни",
+    ylab = "Продажи Сыра, конт.",
+    sub = "Из секретных источников",
     width = 0.8)
 
 axis(side=1, at=c(1:10))
 
-legend("topright", legend=paste("shop №", numbs),
+legend("topright", legend=paste("Магазин №", numbs),
        col=colors_help, lty=1, cex=0.9, lwd = 2,
-       title="Lines_supply", text.font=3, bg='lightcyan')
+       title="Поставщики", text.font=3, bg='lightcyan')
 
 
 
