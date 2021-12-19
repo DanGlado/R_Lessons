@@ -7,7 +7,7 @@ print("Заполнение и копирование исходных данн�
 
 # Список товаров в магазинах с характеристиками
 # n - период (в днях), mi - мин. доставка, ma - макс. доставка
-goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"), c(n=10, mi=50, ma=150, name="Масло"))
+goods <- list(c(n=10, mi=20, ma=100, name="Сыр"), c(n=10, mi=20, ma=100, name="Молоко"), c(n=10, mi=50, ma=100, name="Масло"))
 EXT_SUPPLY <- '.in'
 EXT_SALE <- '.out'
 
@@ -19,6 +19,27 @@ write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")),
   Data_sup <- data.frame('День недели' = days)
   Data_sal <- data.frame('День недели' = days)
 
+  generate.sale <- function(value_sup, sale.level){
+    value_sal <- c()
+    for (elem in value_sup){
+      if (sale.level == 100) {
+        value_sal <- c(value_sal, round(as.integer(floor(runif(1, min=0, max=elem))), 0))
+      } else if (sale.level >= 0){
+        value_sal <- c(value_sal, round(as.integer(floor(runif(1, min=0, max=elem))), 0))
+      } else {
+        print('sale.level error')
+      }
+    }
+    s <- max(value_sup)/sum(value_sal)
+    print('s, sal, sup')
+    print(s)
+    # print(round(as.integer(value_sal*s), 0))
+    # print(value_sup)
+    # print(sum(value_sup*sale.level*0.01))
+    # print(sum(value_sal))
+    value_sal <- round(as.integer(value_sal*s), 0)
+    return (value_sal)
+  }
   # Для каждого товара определяем основные компоненты из вектора в списке goods
   for (vec in goods){
     n <-  as.integer(vec[1])
@@ -30,15 +51,29 @@ write_data <- function (days, goods=list(c(n=10, mi=20, ma=100, name="Сыр")),
     value_sup <- (sample(x = mi:ma, size = n, replace=TRUE))
     value_sal <- c()
     # Генерация проданных товаров по дням
+
+
     for (elem in value_sup){
-      if (sale.level == 100) {
-        value_sal <- c(value_sal, sample(1:elem, size=1))
-    } else if (sale.level >= 0){
-        value_sal <- c(value_sal, sample(1:(elem*(sale.level*0.01)), size=1))
+      if (sale.level >= 0 && sale.level <= 100){
+        value_sal <- c(value_sal, round(as.integer(floor(runif(1, min=0, max=elem))), 2))
       } else {
         print('sale.level error')
       }
     }
+    s <- (sum(value_sup)*sale.level/100)/sum(value_sal)
+    value_sal <- round(as.integer(value_sal*s), 0)
+    if (length(value_sal[value_sal>100])){
+      lish <- (value_sal[value_sal>100]) - (100*length(value_sal[value_sal>100]))
+      value_sal[match(min(value_sal), value_sal)] <- value_sal[match(min(value_sal), value_sal)] + lish
+    }
+
+    # print('s, sal, sup')
+    # print(s)
+    # print(value_sal)
+    # print(sum(value_sal))
+    # print(value_sup)
+    # print(sum(value_sup))
+
     Data_sup[name] <- value_sup
     Data_sal[name] <- value_sal
   }
@@ -88,7 +123,7 @@ days <-  as.integer(goods[[1]][[1]][1])
 generate.data <- function(goods, filename = "Глад", loc_path = 'Гладушенко_Даниил_ПИ20-1/Магазин'){
   for (k in 1:10){
     # Создание таблиц
-    write_data(days, goods, loc_path, sep=.Platform$file.sep, k, filename, sale.level=100)
+    write_data(days, goods, loc_path, sep=.Platform$file.sep, k, filename, sale.level=50)
     }
 }
 
@@ -167,7 +202,7 @@ sale <- rep(0, nrow(res.tab))
 res.tab$"Реализация, конт." <- sale
 res.tab$"Списание, конт." <- sale
 res.tab$"Равномерность продаж" <- sale
-# res.tab$"Списание, 1 товара" <- sale
+
 res.tab$"Продажи макс." <- sale
 res.tab$"День_ПМа" <- sale
 res.tab$"Продажи мин." <- sale
@@ -205,11 +240,6 @@ P_sale <- 8000
 P_util <- 400
 
 # TEST NOT RUN
-# VARS_in[[1]]
-# test <- VARS_in[1] - VARS_out[1]
-# test
-# sum(VARS_in[[1]][, 2])
-# print(VARS_in)
 # dev.new(); par(mfrow = c(strings, columns)); f <- factor(x = flex, levels = day.week);
 
 exes<- c()
@@ -366,7 +396,7 @@ if (file.exists("Результаты.csv")){
 
 shops <- c()  # Вектор интересующих магазинов
 while (TRUE){
-  shop <- as.integer(readline(prompt="Введите номер магазина: "))
+  shop <- as.integer(readline(prompt="Input shop numb: "))
   if (shop != 0){
     shops <- c(shops, shop)
   } else {
@@ -655,7 +685,7 @@ for (good in 2:(length(name.goods)+1)){
   vec.util <- c(vec.util, util)
   vec.rentab <- c(vec.rentab, rentab)
 }
-# print(min(vec.util))
+print(min(vec.util))
 plot_lines(type = "Прибыль", unit = "тыс. руб.", mi_y = min(vec.profit), ma_y = max(vec.profit), list.profit)
 plot_lines(type = "Утилизация", unit = "конт.", mi_y = min(vec.util), ma_y = max(vec.util), list.util)
 plot_lines(type = "Рентабельность", unit = "%", mi_y = min(vec.rentab), ma_y = max(vec.rentab), list.rentab)
